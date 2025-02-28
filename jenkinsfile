@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    triggers {
+        githubPush()
+    }
+
+    environment {
+        DOCKER_IMAGE_NAME = 'java_sci_cal'
+        GITHUB_REPO_URL = 'https://github.com/SiddheshDare/SPE_Mini_Project.git'
+    }
+
+    stages {
+        stage('Checkout from GitHub') {
+            steps {
+                script {
+                    // clone the code from the GitHub repository
+                    git branch: 'main', url: "${GITHUB_REPO_URL}"
+                }
+            }
+        }
+
+        stage('Build & Test') {
+            steps {
+                script {
+                    sh 'mvn clean package' // Build the Java project
+                    sh 'mvn test' // Run unit tests
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("${DOCKER_IMAGE_NAME}", '.')
+                }
+            }
+        }
+
+
+        stage('Push Docker Image') {
+            steps {
+                script {
+                    docker.withRegistry('', 'DockerHubCred') {
+                        sh 'docker tag java_sci_cal siddhesh01/java_sci_cal:latest'
+                        sh 'docker push siddhesh01/java_sci_cal'
+                    }
+                }
+            }
+        }
+
+        stage('Run Ansible Playbook') {
+            steps {
+                script {
+                    withEnv(["ANSIBLE_HOST_KEY_CHECKING=False"]) {
+                        ansiblePlaybook(
+                            playbook: 'deploy.yml',
+                            inventory: 'inventory.ini'
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+}

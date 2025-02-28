@@ -1,0 +1,30 @@
+---
+- name: Deploy Scientific Calculator Docker Image
+  hosts: localhost
+  connection: local
+  become: false
+  tasks:
+
+    - name: Install Python Docker SDK
+      pip:
+        name: docker
+        executable: pip3
+
+    - name: Pull Docker Image from Docker Hub
+      docker_image:
+        name: "siddhesh01/java_sci_cal"
+        source: pull
+      register: docker_pull_result
+
+    - name: Display Docker Pull Result
+      debug:
+        var: docker_pull_result
+
+    - name: Start Docker service
+      service:
+        name: docker
+        state: started
+
+
+    - name: Run Java Application Container
+      shell: docker run -it -d --name java_sci_cal siddhesh01/java_sci_cal /bin/bash
