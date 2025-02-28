@@ -2,6 +2,7 @@ package org.example;
 
 import java.util.Scanner;
 import java.util.InputMismatchException;
+import java.math.BigInteger;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,9 +16,17 @@ public class Main {
             System.out.println("3. Natural Logarithm (ln(x))");
             System.out.println("4. Power Function (x^b)");
             System.out.println("5. Exit");
-            System.out.print("Enter your choice (1-5): ");
+            System.out.print("Enter your choice: ");
 
-            int ch = sc.nextInt();
+            int ch;
+            // Input validation for menu choice
+            try {
+                ch = sc.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Invalid input. Please enter a valid number for your choice.");
+                sc.next(); // Clear the invalid input
+                continue;
+            }
 
             switch (ch) {
                 case 1:
@@ -38,13 +47,15 @@ public class Main {
                     System.out.print("Enter a non-negative integer to calculate factorial: ");
                     try {
                         int number = sc.nextInt();
-                        long result = factorial(number);
-                        System.out.println("Factorial of " + number + " = " + result);
+                        if (number < 0) {
+                            System.out.println("Factorial cannot be calculated for negative numbers.");
+                        } else {
+                            BigInteger result = factorial(number);
+                            System.out.println("Factorial of " + number + " = " + result);
+                        }
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid input. Please enter a valid integer.");
                         sc.next(); // Clear the invalid input
-                    } catch (IllegalArgumentException e) {
-                        System.out.println(e.getMessage());
                     }
                     break;
 
@@ -86,6 +97,8 @@ public class Main {
             }
             System.out.println();
         }
+
+        sc.close();  // Closing the scanner to prevent resource leaks.
     }
 
     public static double squareRoot(double number) {
@@ -95,20 +108,13 @@ public class Main {
         return Math.sqrt(number);
     }
 
-    public static long factorial(int number) {
+    public static BigInteger factorial(int number) {
         if (number < 0) {
             throw new IllegalArgumentException("Cannot calculate factorial of a negative number");
         }
-        if (number == 0 || number == 1) {
-            return 1;
-        }
-
-        long result = 1;
-        for (int i = 2; i <= number; i++) {
-            result *= i;
-            if (result < 0) { // Check for overflow
-                throw new ArithmeticException("Factorial calculation resulted in overflow");
-            }
+        BigInteger result = BigInteger.ONE;
+        for (int i = 1; i <= number; i++) {
+            result = result.multiply(BigInteger.valueOf(i));
         }
         return result;
     }
