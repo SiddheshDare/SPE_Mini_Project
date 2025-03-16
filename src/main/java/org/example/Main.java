@@ -89,7 +89,7 @@ public class Main {
 
                 case 5:
                     start = false;
-                    System.out.println("Exiting the calculator. Goodbye!");
+                    System.out.println("Exiting the calculator.....");
                     break;
 
                 default:
