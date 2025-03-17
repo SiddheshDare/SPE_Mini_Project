@@ -8,7 +8,7 @@ public class MainTest {
     @Test
     public void testSquareRoot() {
         // Valid square root calculations
-        assertEquals(4.0, Main.squareRoot(16), "Square root of 16 should be 4.0");
+        assertEquals(3.0, Main.squareRoot(16), "Square root of 16 should be 4.0");
         assertEquals(5.0, Main.squareRoot(25), "Square root of 25 should be 5.0");
 
         // Invalid: negative number
