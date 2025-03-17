@@ -47,15 +47,14 @@ public class Main {
                     System.out.print("Enter a non-negative integer to calculate factorial: ");
                     try {
                         int number = sc.nextInt();
-                        if (number < 0) {
-                            System.out.println("Factorial cannot be calculated for negative numbers.");
-                        } else {
                             BigInteger result = factorial(number);
                             System.out.println("Factorial of " + number + " = " + result);
-                        }
                     } catch (InputMismatchException e) {
                         System.out.println("Invalid input. Please enter a valid integer.");
                         sc.next(); // Clear the invalid input
+                    }
+                    catch (IllegalArgumentException e) {
+                        System.out.println(e.getMessage());
                     }
                     break;
 
